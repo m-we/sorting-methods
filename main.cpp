@@ -2,6 +2,7 @@
 #include <ctime>
 #include <iostream>
 #include <random>
+#include <string>
 
 /*
 |  <  | = |  >  |  unexplored  |
@@ -72,7 +73,7 @@ void quicksort_PQ(int arr[], int start, int fin) {
     quicksort_PQ(arr, P+1, fin);
 }
 
-void mergesort(int arr[], int len) {
+void mergesort(int arr[], int start, int len) {
     for (int chunksize = 1; chunksize < len; chunksize *= 2) {
         for (int astart = 0; true; astart += 2*chunksize) {
             int aend = astart + chunksize - 1, bstart = aend + 1, bend = bstart + chunksize - 1;
@@ -107,22 +108,38 @@ void mergesort(int arr[], int len) {
     }
 }
 
+void selectionsort(int arr[], int start, int len) {
+    int low;
+    for (start = 0; start < len; start++) {
+        low = start;
+        for (int j = start + 1; j < len; j++)
+            if (arr[j] < arr[low])
+                low = j;
+        std::swap(arr[start], arr[low]);
+    }
+}
+
+void time_sort(void x(int[], int, int), std::string name, int arr[], int start, int fin) {
+    auto t1 = std::chrono::high_resolution_clock::now();
+    x(arr, start, fin);
+    auto t2 = std::chrono::high_resolution_clock::now();
+    auto q = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
+    std::cout << name << ": " << q << " ms\n";
+}
+
 int main() {
     std::srand(time(NULL));
 
-    int arr[10], arr2[10], arr3[10], arr4[10], arr5[10];
+    int x, arr[10], arr2[10], arr3[10], arr4[10], arr5[10], arr6[10];
     for (int i = 0; i < 10; i++) {
-        arr[i] = rand() % 10;
-        arr2[i] = arr[i];
-        arr3[i] = arr[i];
-        arr4[i] = arr[i];
-        arr5[i] = arr[i];
+        x = rand() % 10; arr[i] = x; arr2[i] = x; arr3[i] = x; arr4[i] = x; arr5[i] = x, arr6[i] = x;
     }
 
     quicksort_LEG(arr2, 0, 10);
     quicksort_SN(arr3, 0, 10);
     quicksort_PQ(arr4, 0, 10);
-    mergesort(arr5, 10);
+    mergesort(arr5, 0, 10);
+    selectionsort(arr6, 0, 10);
 
     std::cout << "*** Verification that each of the methods works ***\n";
     std::cout << "Random array  : ";
@@ -140,39 +157,29 @@ int main() {
     std::cout << "\nMergesort     : ";
     for (int i = 0; i < 10; i++)
         std::cout << arr5[i] << " ";
+    std::cout << "\nSelection sort: ";
+    for (int i = 0; i < 10; i++)
+        std::cout << arr6[i] << " ";
 
-    std::cout << "\n\n*** Timing ***\n";
-    int b1[100000], b2[100000], b3[100000], b4[100000];
-    for (int i = 0; i < 100000; i++) {
-        b1[i] = rand() % 100;
-        b2[i] = b1[i];
-        b3[i] = b1[i];
-        b4[i] = b1[i];
+    int n1, n2, n3;
+    std::cout << "\n\nNumber of integers to test (100,000 recommended): ";
+    std::cin >> n1;
+    std::cout << "Lower bound: ";
+    std::cin >> n2;
+    std::cout << "Upper bound: ";
+    std::cin >> n3;
+
+    int * b1 = new int[n1], * b2 = new int[n1], * b3 = new int[n1], * b4 = new int[n1],
+    * b5 = new int[n1];
+    for (int i = 0; i < n1; i++) {
+        x = rand() % n3 + n2; b1[i] = x; b2[i] = x; b3[i] = x; b4[i] = x; b5[i] = x;
     }
 
-    auto t1 = std::chrono::high_resolution_clock::now();
-    quicksort_LEG(b1, 0, 100000);
-    auto t2 = std::chrono::high_resolution_clock::now();
-    auto q = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-    std::cout << "Quicksort LEG: " << q << " ms\n";
-
-    t1 = std::chrono::high_resolution_clock::now();
-    quicksort_SN(b2, 0, 100000);
-    t2 = std::chrono::high_resolution_clock::now();
-    q = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-    std::cout << "Quicksort SN: " << q << " ms\n";
-
-    t1 = std::chrono::high_resolution_clock::now();
-    quicksort_PQ(b3, 0, 100000);
-    t2 = std::chrono::high_resolution_clock::now();
-    q = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-    std::cout << "Quicksort PQ: " << q << " ms\n";
-
-    t1 = std::chrono::high_resolution_clock::now();
-    mergesort(b4, 100000);
-    t2 = std::chrono::high_resolution_clock::now();
-    q = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-    std::cout << "Mergesort: " << q << " ms\n";
+    time_sort(quicksort_LEG, "Quicksort LEG", b1, 0, n1);
+    time_sort(mergesort, "Mergesort", b2, 0, n1);
+    time_sort(quicksort_PQ, "Quicksort PQ", b3, 0, n1);
+    time_sort(quicksort_SN, "Quicksort SN", b4, 0, n1);
+    time_sort(selectionsort, "Selection Sort", b5, 0, n1);
 
     return 0;
 }
