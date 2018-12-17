@@ -1,4 +1,3 @@
-#include <chrono>
 #include <ctime>
 #include <iostream>
 #include <random>
@@ -73,7 +72,7 @@ void quicksort_PQ(int arr[], int start, int fin) {
     quicksort_PQ(arr, P+1, fin);
 }
 
-void mergesort(int arr[], int start, int len) {
+void mergesort(int arr[], int len) {
     for (int chunksize = 1; chunksize < len; chunksize *= 2) {
         for (int astart = 0; true; astart += 2*chunksize) {
             int aend = astart + chunksize - 1, bstart = aend + 1, bend = bstart + chunksize - 1;
@@ -108,78 +107,73 @@ void mergesort(int arr[], int start, int len) {
     }
 }
 
-void selectionsort(int arr[], int start, int len) {
+void selectionsort(int arr[], int len) {
     int low;
-    for (start = 0; start < len; start++) {
-        low = start;
-        for (int j = start + 1; j < len; j++)
+    for (int i = 0; i < len; i++) {
+        low = i;
+        for (int j = i + 1; j < len; j++)
             if (arr[j] < arr[low])
                 low = j;
-        std::swap(arr[start], arr[low]);
+        std::swap(arr[i], arr[low]);
     }
 }
 
-void time_sort(void x(int[], int, int), std::string name, int arr[], int start, int fin) {
-    auto t1 = std::chrono::high_resolution_clock::now();
-    x(arr, start, fin);
-    auto t2 = std::chrono::high_resolution_clock::now();
-    auto q = std::chrono::duration_cast<std::chrono::milliseconds>(t2 - t1).count();
-    std::cout << name << ": " << q << " ms\n";
+void bubblesort(int arr[], int len) {
+    bool didswap;
+    for (int i = 0; i < len - 1; i++) {
+        didswap = false;
+        for (int j = 0; j < len - i - 1; j++) {
+            if (arr[j] > arr[j+1]) {
+                std::swap(arr[j], arr[j+1]);
+                didswap = true;
+            }
+        }
+        if (didswap == false)
+            return;
+    }
+}
+
+void insertionsort(int arr[], int len) {
+    int x, j;
+    for (int i = 1; i < len; i++) {
+        x = arr[i];
+        for (j = i - 1; arr[j] > x && j >= 0; j--)
+            arr[j+1] = arr[j];
+        arr[j+1] = x;
+    }
+}
+
+void print_arr(int arr[], int n, std::string s) {
+    std::cout << "\n" << s << " ";
+    for (int i = 0; i < n; i++)
+        std::cout << arr[i] << " ";
 }
 
 int main() {
     std::srand(time(NULL));
 
-    int x, arr[10], arr2[10], arr3[10], arr4[10], arr5[10], arr6[10];
+    int x, arr1[10], arr2[10], arr3[10], arr4[10], arr5[10], arr6[10], arr7[10], arr8[10];
     for (int i = 0; i < 10; i++) {
-        x = rand() % 10; arr[i] = x; arr2[i] = x; arr3[i] = x; arr4[i] = x; arr5[i] = x, arr6[i] = x;
+        x = rand() % 10; arr1[i] = x; arr2[i] = x; arr3[i] = x; arr4[i] = x; arr5[i] = x,
+        arr6[i] = x, arr7[i] = x; arr8[i] = x;
     }
 
     quicksort_LEG(arr2, 0, 10);
     quicksort_SN(arr3, 0, 10);
     quicksort_PQ(arr4, 0, 10);
-    mergesort(arr5, 0, 10);
-    selectionsort(arr6, 0, 10);
+    mergesort(arr5, 10);
+    selectionsort(arr6, 10);
+    bubblesort(arr7, 10);
+    insertionsort(arr8, 10);
 
-    std::cout << "*** Verification that each of the methods works ***\n";
-    std::cout << "Random array  : ";
-    for (int i = 0; i < 10; i++)
-        std::cout << arr[i] << " ";
-    std::cout << "\nQuicksort LEG : ";
-    for (int i = 0; i < 10; i++)
-        std::cout << arr2[i] << " ";
-    std::cout << "\nQuicksort SN  : ";
-    for (int i = 0; i < 10; i++)
-        std::cout << arr3[i] << " ";
-    std::cout << "\nQuicksort PQ  : ";
-    for (int i = 0; i < 10; i++)
-        std::cout << arr4[i] << " ";
-    std::cout << "\nMergesort     : ";
-    for (int i = 0; i < 10; i++)
-        std::cout << arr5[i] << " ";
-    std::cout << "\nSelection sort: ";
-    for (int i = 0; i < 10; i++)
-        std::cout << arr6[i] << " ";
-
-    int n1, n2, n3;
-    std::cout << "\n\nNumber of integers to test (100,000 recommended): ";
-    std::cin >> n1;
-    std::cout << "Lower bound: ";
-    std::cin >> n2;
-    std::cout << "Upper bound: ";
-    std::cin >> n3;
-
-    int * b1 = new int[n1], * b2 = new int[n1], * b3 = new int[n1], * b4 = new int[n1],
-    * b5 = new int[n1];
-    for (int i = 0; i < n1; i++) {
-        x = rand() % n3 + n2; b1[i] = x; b2[i] = x; b3[i] = x; b4[i] = x; b5[i] = x;
-    }
-
-    time_sort(quicksort_LEG, "Quicksort LEG", b1, 0, n1);
-    time_sort(mergesort, "Mergesort", b2, 0, n1);
-    time_sort(quicksort_PQ, "Quicksort PQ", b3, 0, n1);
-    time_sort(quicksort_SN, "Quicksort SN", b4, 0, n1);
-    time_sort(selectionsort, "Selection Sort", b5, 0, n1);
+    print_arr(arr1, 10, "Random array  :");
+    print_arr(arr2, 10, "Quicksort LEG :");
+    print_arr(arr3, 10, "Quicksort SN  :");
+    print_arr(arr4, 10, "Quicksort PQ  :");
+    print_arr(arr5, 10, "Merge Sort    :");
+    print_arr(arr6, 10, "Selection Sort:");
+    print_arr(arr7, 10, "Bubble Sort   :");
+    print_arr(arr8, 10, "Insertion Sort:");
 
     return 0;
 }

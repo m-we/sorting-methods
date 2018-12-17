@@ -1,1 +1,7 @@
-Creates arrays of 100,000 integers from 0 to 100, sorts them by four methods, and prints out the time required for each. Three of the methods are quicksort w/ different partitioning, and the fourth is a non-recursive mergesort. I (obviously) didn't invent any of these methods.
+Various methods of sorting written in C++.
+
+* Quicksort (3 partitioning methods)
+* Merge Sort
+* Selection Sort
+* Bubble Sort
+* Insertion Sort
