@@ -4,10 +4,13 @@
 #include <string>
 
 /*
-|  <  | = |  >  |  unexplored  |
-      L   E     G
+Time: n log n
+Partition: | < | = | > | unexplored |
+               L   E   G
+Other: Fastest partition method when dealing w/ lots of repeat values,
+       e.g. 100,000 integers between 0 and 100.
 */
-void quicksort_LEG(int arr[], int start, int fin) {
+void quicksort_leg(int arr[], int start, int fin) {
     if (start >= fin)
         return;
     int L = start, E = start+1, G = start+1, pivot = (start+fin)/2;
@@ -25,15 +28,16 @@ void quicksort_LEG(int arr[], int start, int fin) {
         }
     }
 
-    quicksort_LEG(arr, start, L);
-    quicksort_LEG(arr, E, fin);
+    quicksort_leg(arr, start, L);
+    quicksort_leg(arr, E, fin);
 }
 
 /*
-|  <  |  >=  |  unexplored  |p|
-      S      N
+Time: n log n
+Partition: | < | >= | unexplored |p|
+               S    N
 */
-void quicksort_SN(int arr[], int start, int fin) {
+void quicksort_sn(int arr[], int start, int fin) {
     if (start >= fin - 1)
         return;
     int S = start, N = start, pivot = (start+fin)/2;
@@ -47,15 +51,16 @@ void quicksort_SN(int arr[], int start, int fin) {
         }
     }
     std::swap(arr[S], arr[fin-1]);
-    quicksort_SN(arr, start, S);
-    quicksort_SN(arr, S+1, fin);
+    quicksort_sn(arr, start, S);
+    quicksort_sn(arr, S+1, fin);
 }
 
 /*
-|  <=  |  unexplored  |  >=  |p|
-       P              Q
+Time: n log n
+Partition: | <= | unexplored | >= |p|
+                P            Q
 */
-void quicksort_PQ(int arr[], int start, int fin) {
+void quicksort_pq(int arr[], int start, int fin) {
     if (start >= fin)
         return;
     int pivot = (start+fin)/2, P = start, Q = fin - 1;
@@ -68,10 +73,13 @@ void quicksort_PQ(int arr[], int start, int fin) {
         std::swap(arr[P], arr[Q]);
     }
     std::swap(arr[P], arr[fin-1]);
-    quicksort_PQ(arr, start, P);
-    quicksort_PQ(arr, P+1, fin);
+    quicksort_pq(arr, start, P);
+    quicksort_pq(arr, P+1, fin);
 }
 
+/*
+Time: n log n
+*/
 void mergesort(int arr[], int len) {
     for (int chunksize = 1; chunksize < len; chunksize *= 2) {
         for (int astart = 0; true; astart += 2*chunksize) {
@@ -107,6 +115,9 @@ void mergesort(int arr[], int len) {
     }
 }
 
+/*
+Time: n^2
+*/
 void selectionsort(int arr[], int len) {
     int low;
     for (int i = 0; i < len; i++) {
@@ -118,6 +129,9 @@ void selectionsort(int arr[], int len) {
     }
 }
 
+/*
+Time: n^2
+*/
 void bubblesort(int arr[], int len) {
     bool didswap;
     for (int i = 0; i < len - 1; i++) {
@@ -133,6 +147,9 @@ void bubblesort(int arr[], int len) {
     }
 }
 
+/*
+Time: n^2
+*/
 void insertionsort(int arr[], int len) {
     int x, j;
     for (int i = 1; i < len; i++) {
@@ -158,9 +175,9 @@ int main() {
         arr6[i] = x, arr7[i] = x; arr8[i] = x;
     }
 
-    quicksort_LEG(arr2, 0, 10);
-    quicksort_SN(arr3, 0, 10);
-    quicksort_PQ(arr4, 0, 10);
+    quicksort_leg(arr2, 0, 10);
+    quicksort_sn(arr3, 0, 10);
+    quicksort_pq(arr4, 0, 10);
     mergesort(arr5, 10);
     selectionsort(arr6, 10);
     bubblesort(arr7, 10);
