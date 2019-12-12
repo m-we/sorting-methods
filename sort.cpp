@@ -169,28 +169,30 @@ void print_arr(int arr[], int n, std::string s) {
 int main() {
     std::srand(time(NULL));
 
-    int x, arr1[10], arr2[10], arr3[10], arr4[10], arr5[10], arr6[10], arr7[10], arr8[10];
+    int x, arr[8][10];
     for (int i = 0; i < 10; i++) {
-        x = rand() % 10; arr1[i] = x; arr2[i] = x; arr3[i] = x; arr4[i] = x; arr5[i] = x,
-        arr6[i] = x, arr7[i] = x; arr8[i] = x;
+        x = rand() % 10;
+        for (int j = 0; j < 10; j++) {
+            arr[j][i] = x;
+        }
     }
 
-    quicksort_leg(arr2, 0, 10);
-    quicksort_sn(arr3, 0, 10);
-    quicksort_pq(arr4, 0, 10);
-    mergesort(arr5, 10);
-    selectionsort(arr6, 10);
-    bubblesort(arr7, 10);
-    insertionsort(arr8, 10);
+    quicksort_leg(arr[1], 0, 10);
+    quicksort_sn(arr[2], 0, 10);
+    quicksort_pq(arr[3], 0, 10);
+    mergesort(arr[4], 10);
+    selectionsort(arr[5], 10);
+    bubblesort(arr[6], 10);
+    insertionsort(arr[7], 10);
 
-    print_arr(arr1, 10, "Random array  :");
-    print_arr(arr2, 10, "Quicksort LEG :");
-    print_arr(arr3, 10, "Quicksort SN  :");
-    print_arr(arr4, 10, "Quicksort PQ  :");
-    print_arr(arr5, 10, "Merge Sort    :");
-    print_arr(arr6, 10, "Selection Sort:");
-    print_arr(arr7, 10, "Bubble Sort   :");
-    print_arr(arr8, 10, "Insertion Sort:");
+    print_arr(arr[0], 10, "Random array  :");
+    print_arr(arr[1], 10, "Quicksort LEG :");
+    print_arr(arr[2], 10, "Quicksort SN  :");
+    print_arr(arr[3], 10, "Quicksort PQ  :");
+    print_arr(arr[4], 10, "Merge Sort    :");
+    print_arr(arr[5], 10, "Selection Sort:");
+    print_arr(arr[6], 10, "Bubble Sort   :");
+    print_arr(arr[7], 10, "Insertion Sort:");
 
     return 0;
 }
